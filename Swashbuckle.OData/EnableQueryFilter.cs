@@ -6,6 +6,7 @@ using System.Web.OData;
 using Swashbuckle.OData.Descriptions;
 using Swashbuckle.Swagger;
 using System;
+using Microsoft.AspNet.OData;
 
 namespace Swashbuckle.OData
 {

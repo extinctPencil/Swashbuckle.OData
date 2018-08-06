@@ -40,6 +40,9 @@ namespace Swashbuckle.OData.Descriptions
 
         private Collection<ApiDescription> GetApiDescriptions()
         {
+
+            var inter = _actionDescriptorExplorers.SelectMany(explorer => explorer.Generate(_httpConfig)).ToCollection();
+
             return _actionDescriptorExplorers
                 // Gather ODataActionDescriptors from the API
                 .SelectMany(explorer => explorer.Generate(_httpConfig))

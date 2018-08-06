@@ -249,12 +249,12 @@ namespace Swashbuckle.OData.Tests
 
             config.Services.Replace(typeof(IHttpControllerSelector), new RestierControllerSelector(config));
 
-            var customSwaggerRoute = await config.MapRestierRoute<EntityFrameworkApi<NorthwindContext>>("RESTierRoute", "restier", new RestierBatchHandler(server));
+            //var customSwaggerRoute = await config.MapRestierRoute<EntityFrameworkApi<NorthwindContext>>("RESTierRoute", "restier", new RestierBatchHandler(server));
 
-            config.AddCustomSwaggerRoute(customSwaggerRoute, "/Customers({CustomerId})/Orders({OrderId})")
-                .Operation(HttpMethod.Get)
-                .PathParameter<string>("CustomerId")
-                .PathParameter<int>("OrderId");
+            //config.AddCustomSwaggerRoute(customSwaggerRoute, "/Customers({CustomerId})/Orders({OrderId})")
+            //    .Operation(HttpMethod.Get)
+            //    .PathParameter<string>("CustomerId")
+            //    .PathParameter<int>("OrderId");
 
             config.EnsureInitialized();
         }
@@ -285,7 +285,7 @@ namespace Swashbuckle.OData.Tests
 
             config.Services.Replace(typeof(IHttpControllerSelector), new RestierControllerSelector(config));
 
-            await config.MapRestierRoute<EntityFrameworkApi<TestRestierODataContext>>("RESTierRoute", "restier", new RestierBatchHandler(server));
+            //await config.MapRestierRoute<EntityFrameworkApi<TestRestierODataContext>>("RESTierRoute", "restier", new RestierBatchHandler(server));
 
             config.EnsureInitialized();
         }

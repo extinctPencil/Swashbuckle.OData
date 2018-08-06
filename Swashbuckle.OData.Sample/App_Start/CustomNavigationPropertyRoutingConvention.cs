@@ -1,16 +1,15 @@
 using System.Linq;
 using System.Net.Http;
 using System.Web.Http.Controllers;
-using System.Web.OData.Routing.Conventions;
+using Microsoft.AspNet.OData.Routing.Conventions;
 using Microsoft.OData.UriParser;
 using SwashbuckleODataSample.ODataControllers;
-using ODataPath = System.Web.OData.Routing.ODataPath;
 
 namespace SwashbuckleODataSample
 {
     public class CustomNavigationPropertyRoutingConvention : EntitySetRoutingConvention
     {
-        public override string SelectAction(ODataPath odataPath, HttpControllerContext controllerContext, ILookup<string, HttpActionDescriptor> actionMap)
+        public override string SelectAction(Microsoft.AspNet.OData.Routing.ODataPath odataPath, HttpControllerContext controllerContext, ILookup<string, HttpActionDescriptor> actionMap)
         {
             var controllerType = controllerContext.ControllerDescriptor.ControllerType;
 
@@ -41,7 +40,7 @@ namespace SwashbuckleODataSample
             return base.SelectAction(odataPath, controllerContext, actionMap);
         }
 
-        public override string SelectController(ODataPath odataPath, HttpRequestMessage request)
+        public override string SelectController(Microsoft.AspNet.OData.Routing.ODataPath odataPath, HttpRequestMessage request)
         {
             // We use always use the last navigation as the controller vs. the initial entityset
             if (odataPath.PathTemplate.Contains("~/entityset/key/navigation"))

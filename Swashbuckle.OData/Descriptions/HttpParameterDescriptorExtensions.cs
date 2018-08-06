@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Contracts;
+﻿using Microsoft.AspNet.OData;
+using System.Diagnostics.Contracts;
 using System.Web.Http.Controllers;
 using System.Web.OData;
 

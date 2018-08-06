@@ -6,10 +6,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using System.Web.OData;
-using System.Web.OData.Builder;
-using System.Web.OData.Extensions;
 using FluentAssertions;
+using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Builder;
+using Microsoft.AspNet.OData.Extensions;
 using Microsoft.OData.Edm;
 using Microsoft.Owin.Hosting;
 using NUnit.Framework;
@@ -132,7 +132,7 @@ namespace Swashbuckle.OData.Tests
         public double Price { get; set; }
     }
 
-    public class ProductResponsesController : ODataController
+    public class ProductResponsesController : Microsoft.AspNet.OData.ODataController
     {
         private static readonly ConcurrentDictionary<string, ProductResponse> Data;
 

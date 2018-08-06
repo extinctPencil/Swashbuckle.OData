@@ -5,9 +5,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Controllers;
-using System.Web.OData.Extensions;
+using System.Web.Http.Routing;
 using System.Web.OData.Formatter;
-using System.Web.OData.Routing;
+using Microsoft.AspNet.OData.Extensions;
+using Microsoft.AspNet.OData.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OData.Edm;
 using Swashbuckle.Swagger;
@@ -20,6 +21,7 @@ namespace Swashbuckle.OData.Descriptions
     internal class SwaggerRouteStrategy : IODataActionDescriptorExplorer
     {
         private const string ServiceRoot = "http://any/";
+        //"https://w10pc6664.css.ad.capita.co.uk:95/PupilService/";
 
         private readonly IEnumerable<ISwaggerRouteGenerator> _swaggerRouteGenerators;
 
@@ -87,24 +89,36 @@ namespace Swashbuckle.OData.Descriptions
 
             Contract.Assume(potentialSwaggerRoute.ODataRoute.Constraints != null);
 
-            var oDataAbsoluteUri = potentialOperation.GenerateSampleODataUri(ServiceRoot, potentialSwaggerRoute.PrefixedTemplate);
+            var oDataAbsoluteUri = potentialOperation.GenerateSampleODataUri(ServiceRoot, potentialSwaggerRoute.PrefixedTemplate, potentialSwaggerRoute.ODataRoute);
+
             var oDataRoute = potentialSwaggerRoute.ODataRoute;
 
             var httpRequestMessage = new HttpRequestMessage(httpMethod, oDataAbsoluteUri);
             var odataPath = GenerateSampleODataPath(potentialOperation, potentialSwaggerRoute, httpConfig.GetODataRootContainer(oDataRoute));
-
-            var requestContext = new HttpRequestContext
-            {
-                Configuration = httpConfig
-            };
             httpRequestMessage.SetConfiguration(httpConfig);
-            httpRequestMessage.SetRequestContext(requestContext);
+
             var httpRequestMessageProperties = httpRequestMessage.ODataProperties();
             Contract.Assume(httpRequestMessageProperties != null);
             httpRequestMessageProperties.Path = odataPath;
-            httpRequestMessage.SetRouteData(oDataRoute.GetRouteData("/", httpRequestMessage));
+
+            var requestContext = new HttpRequestContext
+            {
+                Configuration = httpConfig,
+                Url = new UrlHelper()
+            };
+            httpRequestMessage.SetRequestContext(requestContext);
+            IHttpRouteData httpRouteData = oDataRoute.GetRouteData("/", httpRequestMessage);
+            httpRequestMessage.SetRouteData(httpRouteData);
+
             return httpRequestMessage;
         }
+
+        #region temp
+
+        //
+
+
+        #endregion
 
         private static HttpActionDescriptor MapForRestierIfNecessary(HttpRequestMessage request, HttpActionDescriptor actionDescriptor)
         {
@@ -157,7 +171,7 @@ namespace Swashbuckle.OData.Descriptions
             var pathHandler = rootContainer.GetRequiredService<IODataPathHandler>();
             Contract.Assume(pathHandler != null);
 
-            var odataPath = operation.GenerateSampleODataUri(ServiceRoot, swaggerRoute.Template).Replace(ServiceRoot, string.Empty);
+            var odataPath = operation.GenerateSampleODataUri(ServiceRoot, swaggerRoute.Template, swaggerRoute.ODataRoute).Replace(ServiceRoot, string.Empty);
 
             var result = pathHandler.Parse(ServiceRoot, odataPath, rootContainer);
             Contract.Assume(result != null);

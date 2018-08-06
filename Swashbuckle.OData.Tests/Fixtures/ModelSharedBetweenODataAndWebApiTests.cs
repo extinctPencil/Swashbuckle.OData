@@ -7,18 +7,15 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using System.Web.OData;
-using System.Web.OData.Builder;
-using System.Web.OData.Extensions;
-using System.Web.OData.Formatter;
-using System.Web.OData.Formatter.Deserialization;
-using System.Web.OData.Formatter.Serialization;
-using System.Web.OData.Routing;
 using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OData;
+using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Builder;
+using Microsoft.AspNet.OData.Extensions;
+using Microsoft.AspNet.OData.Formatter;
+using Microsoft.AspNet.OData.Formatter.Deserialization;
+using Microsoft.AspNet.OData.Formatter.Serialization;
+using Microsoft.AspNet.OData.Routing;
 using Microsoft.OData.Edm;
-using Microsoft.Owin;
 using Microsoft.Owin.Hosting;
 using NUnit.Framework;
 using Owin;
@@ -100,7 +97,9 @@ namespace Swashbuckle.OData.Tests
             var oDataRoute = ConfigureOData(appBuilder, targetControllers, config, unitTestConfigs);
             var rootContainer = config.GetODataRootContainer(oDataRoute);
 
-            config.Formatters.InsertRange(0, ODataMediaTypeFormatters.Create(new DefaultODataSerializerProvider(rootContainer), new DefaultODataDeserializerProvider(rootContainer)));
+            //TODO: Reinstate
+
+            config.Formatters.InsertRange(0, ODataMediaTypeFormatters.Create());// { new DefaultODataSerializerProvider(rootContainer), new DefaultODataDeserializerProvider(rootContainer)});
 
             config.EnsureInitialized();
         }

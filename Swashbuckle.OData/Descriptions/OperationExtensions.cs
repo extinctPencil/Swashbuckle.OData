@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using Microsoft.AspNet.OData.Routing;
 using Swashbuckle.Swagger;
 
 namespace Swashbuckle.OData.Descriptions
 {
+
     internal static class OperationExtensions
     {
         public static IDictionary<string, string> GenerateSamplePathParameterValues(this Operation operation)
@@ -16,7 +18,7 @@ namespace Swashbuckle.OData.Descriptions
                 .ToDictionary(queryParameter => queryParameter.name, queryParameter => queryParameter.GenerateSamplePathParameterValue());
         }
 
-        public static string GenerateSampleODataUri(this Operation operation, string serviceRoot, string pathTemplate)
+        public static string GenerateSampleODataUri(this Operation operation, string serviceRoot, string pathTemplate, ODataRoute route)
         {
             Contract.Requires(operation != null);
             Contract.Requires(serviceRoot != null);
@@ -25,6 +27,9 @@ namespace Swashbuckle.OData.Descriptions
 
             if (parameters != null && parameters.Any())
             {
+                // if we have been supplied a versionPathResolver lets Use it.
+               ODataSwaggerProvider.VersionPathParameterResolver?.Invoke(parameters, route);
+
                 var prefix = new Uri(serviceRoot);
 
                 return new UriTemplate(pathTemplate).BindByName(prefix, parameters).ToString();

@@ -4,15 +4,18 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
-using System.Web.OData.Routing;
 using Microsoft.OData.Edm;
 using Swashbuckle.Application;
 using Swashbuckle.OData.Descriptions;
 using Swashbuckle.Swagger;
 using System.Collections.Concurrent;
+using Microsoft.AspNet.OData.Routing;
 
 namespace Swashbuckle.OData
 {
+
+    public delegate void VersionPathParameterResolver(IDictionary<string, string> parameters, ODataRoute route);
+
     public class ODataSwaggerProvider : ISwaggerProvider
     {
         private readonly ISwaggerProvider _defaultProvider;
@@ -20,6 +23,10 @@ namespace Swashbuckle.OData
 
         private static ConcurrentDictionary<string, Lazy<SwaggerDocument>> _cache =
             new ConcurrentDictionary<string, Lazy<SwaggerDocument>>();
+
+
+        public static VersionPathParameterResolver VersionPathParameterResolver;
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ODataSwaggerProvider" /> class.

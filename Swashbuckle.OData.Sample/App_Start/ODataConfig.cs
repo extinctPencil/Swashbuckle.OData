@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Configuration;
 using System.Web.Http;
 using System.Web.Http.Dispatcher;
-using System.Web.OData.Builder;
-using System.Web.OData.Extensions;
-using System.Web.OData.Routing;
-using System.Web.OData.Routing.Conventions;
+using Microsoft.AspNet.OData.Builder;
+using Microsoft.AspNet.OData.Extensions;
+using Microsoft.AspNet.OData.Routing;
+using Microsoft.AspNet.OData.Routing.Conventions;
 using Microsoft.OData;
 using Microsoft.OData.Edm;
 using Microsoft.OData.UriParser;
@@ -33,7 +34,8 @@ namespace SwashbuckleODataSample
         private static async void ConfigureRestierOData(HttpConfiguration config)
         {
             config.Filter().Expand().Select().OrderBy().MaxTop(null).Count();
-            await config.MapRestierRoute<EntityFrameworkApi<RestierODataContext>>("RESTierRoute", "restier", new RestierBatchHandler(GlobalConfiguration.DefaultServer));
+            await Task.Yield();
+           // await config.MapRestierRoute<EntityFrameworkApi<RestierODataContext>>("RESTierRoute", "restier", new RestierBatchHandler(GlobalConfiguration.DefaultServer));
         }
 
         private static void ConfigureWebApiOData(HttpConfiguration config)
@@ -184,15 +186,15 @@ namespace SwashbuckleODataSample
             // Accepts multiple action parameters
             var createAction = productType.Collection.Action("Create");
                 createAction.ReturnsFromEntitySet<Product>("Products");
-                createAction.Parameter<string>("Name").OptionalParameter = false;
-                createAction.Parameter<double>("Price").OptionalParameter = false;
-                createAction.Parameter<MyEnum>("EnumValue").OptionalParameter = false;
+                createAction.Parameter<string>("Name").Required();
+            createAction.Parameter<double>("Price").Required();
+            createAction.Parameter<MyEnum>("EnumValue").Required();
 
             // An action bound to an entity set
             // Accepts an array of complex types
             var postArrayAction = productType.Collection.Action("PostArray");
             postArrayAction.ReturnsFromEntitySet<Product>("Products");
-            postArrayAction.CollectionParameter<ProductDto>("products").OptionalParameter = false;
+            postArrayAction.CollectionParameter<ProductDto>("products").Required();//.OptionalParameter = false;
 
             // An action bound to an entity
             productType.Action("Rate")
